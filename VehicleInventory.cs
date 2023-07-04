@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using VehicleInventoryProject.Interface;
+﻿
+using System.Linq.Expressions;
 
 namespace VehicleInventoryProject
 {
-    internal class VehicleInventory : IVehicleInventory
+    public class VehicleInventory : IVehicleInventory
     {
 
         private List<IVehicle> inventory;
@@ -26,40 +19,55 @@ namespace VehicleInventoryProject
         {
             Console.WriteLine("Enter vehicle type (car, truck or motorcycle)");
             string type = Console.ReadLine();
-            Console.WriteLine("Enter vehicle make");
-            string make = Console.ReadLine();
-            Console.WriteLine("Enter model");
-            string model = Console.ReadLine();
-            Console.WriteLine("Enter year of production");
-            int year;
-            while (!int.TryParse(Console.ReadLine(), out year) || year < 1886 || year > 3000 )
+
+            if (type == "car" || type == "truck" || type == "motorcycle")
             {
-                Console.WriteLine("Invalid year! Please enter valid year.");
-            }
-            Console.WriteLine("Enter price");
-            double price;
-            while (!double.TryParse(Console.ReadLine(),out price) || price <= 0)
-            {
-                Console.WriteLine("Invalid price! Enter a valid amount.");
-            }
-            Console.WriteLine("Enter vehicle license plate with 8 symbols without space.");
-            string addPlate = Console.ReadLine();
-            if (ValidatePlateNumber(addPlate) == false) 
-            {
-                Console.WriteLine("Invalid license plate pattern. Enter 8 symbols without space.");
+                Console.WriteLine("Enter vehicle make");
+                string make = Console.ReadLine();
+                Console.WriteLine("Enter model");
+                string model = Console.ReadLine();
+                Console.WriteLine("Enter year of production");
+                int year;
+                while (!int.TryParse(Console.ReadLine(), out year) || year < 1886 || year > 3000)
+                {
+                    Console.WriteLine("Invalid year! Please enter valid year.");
+                    Console.WriteLine("Enter valid year.");
+
+                }
+                Console.WriteLine("Enter price");
+                double price;
+                while (!double.TryParse(Console.ReadLine(), out price) || price <= 0)
+                {
+                    Console.WriteLine("Invalid price!");
+                    Console.WriteLine("Enter valid price");
+                }
+                Console.WriteLine("Enter vehicle license plate with 8 symbols without space.");
+                string addPlate = Console.ReadLine();
+                while (ValidatePlateNumber(addPlate) == false)
+                {
+                    Console.WriteLine("Invalid license plate pattern.");
+                    Console.WriteLine("Enter 8 symbols without space.");
+                    addPlate = Console.ReadLine();
+                }
+
+                inventory.Add(new Vehicle(make, model, year, price, addPlate));
+                Console.WriteLine("Vehicle is added successfully.");
+                Console.WriteLine();
             }
             else
             {
-                inventory.Add(new Vehicle(make, model, year, price, addPlate));
-                Console.WriteLine("Vehicle is added successfully.");
+                Console.WriteLine("Invalid type of vehicle");
+                Console.WriteLine();
             }
+            
+            
 
         }
 
         private bool ValidatePlateNumber(string plateNumber)
         {
             plateNumber = plateNumber.Replace(" ", "");
-            string expresion = @"^[A-Z0-9]{8}$";
+            string expresion = @"^[A-Z0-9a-z]{8}$";
             if (Regex.IsMatch(plateNumber, expresion))
             {
                 return true;
@@ -70,7 +78,7 @@ namespace VehicleInventoryProject
             }
         }
 
-        public void RemoveVehicle(Vehicle plate)
+        public void RemoveVehicle()
         {
             Console.WriteLine("Enter the licese plate to remove vehicle.");
             string removePlate = Console.ReadLine() ;
@@ -79,6 +87,7 @@ namespace VehicleInventoryProject
             {
                 inventory.Remove(vehicle);
                 Console.WriteLine("Vehicle removed.");
+                Console.WriteLine();
             }
             else
             {
@@ -86,7 +95,7 @@ namespace VehicleInventoryProject
             }
         }
 
-        public void UpdateVehiclePrice(Vehicle plate)
+        public void UpdateVehiclePrice()
         {
             Console.WriteLine("Enter the licese plate to update vehicle price.");
             string updatePlate = Console.ReadLine() ;
@@ -102,6 +111,7 @@ namespace VehicleInventoryProject
 
                 vehicle.Price = newPrice;
                 Console.WriteLine("Vehicle price updated.");
+                Console.WriteLine();
             }
             else
             {
@@ -120,6 +130,7 @@ namespace VehicleInventoryProject
                     Console.WriteLine($"Year of manufacture: {vehicle.Year}");
                     Console.WriteLine($"Price: {vehicle.Price}");
                     Console.WriteLine($"License plate: {vehicle.Plate}");
+                    Console.WriteLine();
                 }
             }
             else
@@ -134,7 +145,25 @@ namespace VehicleInventoryProject
             string vehicleType = Console.ReadLine();
 
             List<IVehicle> vehicleByType = inventory.Where(v => GetVehicleType(v) == vehicleType).OrderBy(v  => v.Make).ThenBy(v => v.Model).ToList();
-
+            
+            if (vehicleByType.Count > 0)
+            {
+                Console.WriteLine($"{vehicleType} inventory:");
+                
+                foreach (IVehicle vehicle in vehicleByType)
+                {
+                    Console.WriteLine($"Make: {vehicle.Make}");
+                    Console.WriteLine($"Model: {vehicle.Model}");
+                    Console.WriteLine($"Year of manufacture: {vehicle.Year}");
+                    Console.WriteLine($"Price: {vehicle.Price}");
+                    Console.WriteLine($"License plate: {vehicle.Plate}");
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No vehicle found in {vehicleType} inventory.");
+            }
         }
 
         private string GetVehicleType(IVehicle vehicle)

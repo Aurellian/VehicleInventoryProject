@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace VehicleInventoryProject
 {
-    internal class Car : Vehicle
+    public class Car : Vehicle
     {
         public Car()
         {
