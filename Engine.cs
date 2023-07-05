@@ -7,10 +7,12 @@ public class Engine
     {
         VehicleInventory inventory = new VehicleInventory();
 
-        while (true)
-        {
             Console.WriteLine("WELCOME TO ITSTEP VEHICLE INVENTORY");
             Console.WriteLine();
+
+        while (true)
+        {
+
             Console.WriteLine("Select option from menu.");
             Console.WriteLine("1. Add vehicle to inventory.");
             Console.WriteLine("2. Remove vehicle from inventory.");
