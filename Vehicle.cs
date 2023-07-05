@@ -15,7 +15,6 @@ namespace VehicleInventoryProject
         public string Make => make;
         public string Model => model;
         public int Year => year;
-        //public double Price => price;
         public string Plate => plate;
 
         public double Price
